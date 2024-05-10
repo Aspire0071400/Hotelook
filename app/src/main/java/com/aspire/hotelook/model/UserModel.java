@@ -1,18 +1,29 @@
 package com.aspire.hotelook.model;
 
 public class UserModel {
+    String uid = null;
     String name = null;
     String email = null;
     String phoneNumber = null;
     String gender = null;
     String address = null;
 
-    public UserModel(String name, String email, String phoneNumber, String gender, String address) {
+    public UserModel(String uid,String name, String email, String phoneNumber, String gender, String address) {
+        this.uid = uid;
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.address = address;
+    }
+
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getName() {

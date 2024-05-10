@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        app:cardCornerRadius="20dp"
+        android:elevation="20dp"
+        android:backgroundTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <ImageView
+            android:id="@+id/hotel_image"
+            android:layout_width="120dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="16dp"
+            app:srcCompat="@drawable/ic_launcher_background" />
+
+        <TextView
+            android:id="@+id/hotel_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="25dp"
+            android:text="Hotel Name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:maxEms="8"
+            android:lines="1"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="150dp"
+            android:layout_marginBottom="40dp"/>
+
+        <TextView
+            android:id="@+id/hotel_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="85dp"
+            android:text="Hotel Description : jdnhfjhn u heuihh uewhuih uwehguih urgi g irhg iurhuwh rukdj nfk sjdgk fdjsgk jhdjs hdfdh fjl hj ddfjk dh"
+            android:textSize="16sp"
+            android:maxEms="11"
+            android:textStyle="italic"
+            android:lines="4"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="150dp"
+            android:layout_marginTop="16dp"/>
+
+        <ImageButton
+            android:id="@+id/delete_hotel"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/baseline_delete_24"
+            android:background="@color/transparent"/>
+
+        <ImageButton
+            android:id="@+id/edit_hotel"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/baseline_edit_24"
+            android:background="@color/transparent"/>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

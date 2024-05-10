@@ -32,7 +32,6 @@ public class SignUpActivity extends AppCompatActivity {
     private final ArrayList<String> gender_list = new ArrayList<>();
     private FirebaseAuth auth;
     private FirebaseFirestore firestore;
-    private UserModel user;
     private String uid;
 
     @Override
@@ -96,7 +95,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 if(task.isComplete()){
                                     uid = task.getResult().getUser().getUid();
                                     firestore.collection("users").document(uid)
-                                            .set(user = new UserModel(name, email, phoneNumber, gender, address))
+                                            .set(new UserModel(uid, name, email, phoneNumber, gender, address))
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<Void> task) {
