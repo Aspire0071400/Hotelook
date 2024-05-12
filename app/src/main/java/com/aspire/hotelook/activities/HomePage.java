@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,18 +22,20 @@ import com.aspire.hotelook.R;
 import com.aspire.hotelook.adapter.HotelAdapter;
 import com.aspire.hotelook.databinding.ActivityHomePageBinding;
 import com.aspire.hotelook.model.HotelModel;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class HomePage extends AppCompatActivity implements AddHotelDetailsFragment.OnDialogDismissListener{
+public class HomePage extends AppCompatActivity {
     ActivityHomePageBinding binding;
     private RecyclerView hotelRecyclerView;
     private HotelAdapter hotelAdapter;
     private ArrayList<HotelModel> hotelList;
-    private FirebaseAuth auth;
-    private FirebaseFirestore firestore;
+    private FirebaseDatabase firebaseDatabase;
 
 
     @Override
@@ -49,7 +50,6 @@ public class HomePage extends AppCompatActivity implements AddHotelDetailsFragme
             return insets;
         });
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
 
         hotelRecyclerView = findViewById(R.id.hotel_recycler_view);
         hotelList = new ArrayList<>();
@@ -57,8 +57,8 @@ public class HomePage extends AppCompatActivity implements AddHotelDetailsFragme
         hotelRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         hotelRecyclerView.setAdapter(hotelAdapter);
 
-        auth = FirebaseAuth.getInstance();
-        firestore = FirebaseFirestore.getInstance();
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
 
         binding.addHotelFab.setOnClickListener(v -> {
             if (ContextCompat.checkSelfPermission(this,
@@ -70,7 +70,7 @@ public class HomePage extends AppCompatActivity implements AddHotelDetailsFragme
                         new String[]{Manifest.permission.READ_MEDIA_IMAGES},
                         111);
             } else {
-                AddHotelDetailsFragment addHotelDetailsFragment = new AddHotelDetailsFragment(hotelAdapter,this::onDialogDismissed);
+                AddHotelDetailsFragment addHotelDetailsFragment = new AddHotelDetailsFragment(hotelAdapter);
                 addHotelDetailsFragment.show(getSupportFragmentManager(), "AddHotelDetailsFragment");
             }
 
@@ -78,17 +78,30 @@ public class HomePage extends AppCompatActivity implements AddHotelDetailsFragme
 
         });
 
-        fetchHotelDataFromFirestore();
+        fetchHotelDataFromDatabase();
 
     }
 
-    private void fetchHotelDataFromFirestore() {
-        firestore.collection("Hotels").get().addOnSuccessListener(queryDocumentSnapshots -> {
-            hotelList.addAll(queryDocumentSnapshots.toObjects(HotelModel.class));
-            hotelAdapter.setHotelList(hotelList);
-            hotelAdapter.notifyDataSetChanged();
-        }).addOnFailureListener(e -> {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+    private void fetchHotelDataFromDatabase() {
+        firebaseDatabase.getReference().child("Hotels").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    hotelList.clear();
+                    for(DataSnapshot hotelSnapshot : snapshot.getChildren()){
+                        HotelModel hotelModel = hotelSnapshot.getValue(HotelModel.class);
+                        hotelList.add(hotelModel);
+                        hotelAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                String errorMessage = error.getMessage();
+                Toast.makeText(HomePage.this, errorMessage, Toast.LENGTH_SHORT).show();
+                hotelAdapter.notifyDataSetChanged();
+
+            }
         });
     }
 
@@ -98,19 +111,12 @@ public class HomePage extends AppCompatActivity implements AddHotelDetailsFragme
 
         if (requestCode == 111) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                AddHotelDetailsFragment addHotelDetailsFragment = new AddHotelDetailsFragment(hotelAdapter,this::onDialogDismissed);
+                AddHotelDetailsFragment addHotelDetailsFragment = new AddHotelDetailsFragment(hotelAdapter);
                 addHotelDetailsFragment.show(getSupportFragmentManager(), "AddHotelDetailsFragment");
             }
 
         }
 
-    }
-
-    @Override
-    public void onDialogDismissed() {
-        Intent intent = getIntent();
-        finish();
-        startActivity(intent);
     }
 
 }

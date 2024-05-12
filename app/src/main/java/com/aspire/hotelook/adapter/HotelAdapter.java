@@ -24,7 +24,10 @@ import com.aspire.hotelook.dialog.AddHotelDetailsFragment;
 import com.aspire.hotelook.model.HotelModel;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -32,7 +35,7 @@ import java.util.ArrayList;
 public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder>{
     ArrayList<HotelModel> hotelList;
     Context context;
-    private FirebaseFirestore firestore;
+    private FirebaseDatabase firebaseDatabase;
 
     private Activity activity;
 
@@ -42,12 +45,8 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder>{
         this.activity = activity;
     }
 
-    public void setHotelList(ArrayList<HotelModel> hotelList) {
-        this.hotelList = hotelList;
-        notifyDataSetChanged(); // Notify RecyclerView that data has changed
+    public HotelAdapter() {
     }
-
-
 
     @NonNull
     @Override
@@ -75,7 +74,7 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder>{
                     String hotel = hotelList.get(position).getHotelName();
                     hotelList.remove(position);
                     notifyItemRemoved(position);
-                    Toast.makeText(context, hotel+" deleted from Firestore", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, hotel+" deleted from Database", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -121,19 +120,18 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder>{
     }
 
     private void deleteHotelFromFirestore(String hotelId) {
-        firestore = FirebaseFirestore.getInstance();
-        firestore.collection("Hotels").document(hotelId).delete()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(context, "Hotel deleted from Firestore", Toast.LENGTH_SHORT).show();
 
-                        } else {
-                            Toast.makeText(context, "Failed to delete hotel from Firestore", Toast.LENGTH_SHORT).show();
-                        }
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseDatabase.getReference()
+                .child("Hotels").
+                child(hotelId).
+                removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(context, "Hotel deleted from Database", Toast.LENGTH_SHORT).show();
+                        notifyDataSetChanged();
                     }
-                });
+                }).addOnFailureListener(e -> Toast.makeText(context, "Failed to delete hotel from Database", Toast.LENGTH_SHORT).show());
     }
 
 }

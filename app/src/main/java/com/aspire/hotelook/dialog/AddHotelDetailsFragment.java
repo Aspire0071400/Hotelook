@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
@@ -27,7 +28,10 @@ import com.aspire.hotelook.databinding.FragmentAddHotelDetailsBinding;
 import com.aspire.hotelook.model.HotelModel;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.TransitionOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -42,17 +46,15 @@ public class AddHotelDetailsFragment extends DialogFragment {
     private EditText addHotelName, addHotelDescription;
     private CircleImageView hotelImage;
     private FirebaseAuth auth;
-    private FirebaseFirestore firestore;
+    private FirebaseDatabase firebaseDatabase;
     private FirebaseStorage storage;
     private Uri imageUri;
     private HotelAdapter hotelAdapter;
     HotelModel hotelModel;
-    private OnDialogDismissListener dismissListener;
 
 
-    public AddHotelDetailsFragment(HotelAdapter hotelAdapter, OnDialogDismissListener dismissListener) {
+    public AddHotelDetailsFragment(HotelAdapter hotelAdapter) {
         this.hotelAdapter = hotelAdapter;
-        this.dismissListener = dismissListener;
     }
 
 
@@ -68,7 +70,7 @@ public class AddHotelDetailsFragment extends DialogFragment {
         ImageButton backBtn = view.findViewById(R.id.back_btn);
         storage = FirebaseStorage.getInstance();
         auth = FirebaseAuth.getInstance();
-        firestore = FirebaseFirestore.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance();
 
 
         hotelImage.setOnClickListener(v -> {
@@ -92,17 +94,21 @@ public class AddHotelDetailsFragment extends DialogFragment {
                 } else {
                     String imageUrl = imageUri.toString();
                         hotelModel = new HotelModel(hotelId, hotelName, hotelDescription, imageUrl);
-                        firestore.collection("Hotels").document(hotelId).set(hotelModel)
-                                .addOnCompleteListener(firestoreTask -> {
-                                    if (firestoreTask.isSuccessful()) {
-                                        Toast.makeText(getContext(), "Hotel added successfully", Toast.LENGTH_SHORT).show();
-                                        hotelAdapter.notifyDataSetChanged();
-                                        dismiss();
-                                    } else {
-                                        Toast.makeText(getContext(), "Error adding hotel", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
 
+                        firebaseDatabase.getReference()
+                                .child("Hotels")
+                                .child(hotelId)
+                                .setValue(hotelModel)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(getContext(), "Hotel added successfully", Toast.LENGTH_SHORT).show();
+                                hotelAdapter.notifyDataSetChanged();
+                                dismiss();
+                            }
+                        }).addOnFailureListener(e -> {
+                                    Toast.makeText(getContext(), "Error adding hotel", Toast.LENGTH_SHORT).show();
+                        });
                 }
             }catch (Exception e){
                 Toast.makeText(getContext(), "Error adding hotel" + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -138,7 +144,6 @@ public class AddHotelDetailsFragment extends DialogFragment {
                     storageReference.getDownloadUrl().addOnCompleteListener(uriTask -> {
                         if (uriTask.isSuccessful()) {
                             hotelImage.setImageURI(uri);
-                            //Glide.with(this).load(data.getData().toString()).into(hotelImage);
                             imageUri = uriTask.getResult();
                         } else {
                             Toast.makeText(getContext(), "Error getting download URL: " + Objects.requireNonNull(uriTask.getException()).getMessage(), Toast.LENGTH_SHORT).show();
@@ -151,16 +156,5 @@ public class AddHotelDetailsFragment extends DialogFragment {
         }
         else {Toast.makeText(getContext(), "No image selected", Toast.LENGTH_SHORT).show();}
     }
-
-    public interface OnDialogDismissListener {
-        void onDialogDismissed();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        dismissListener.onDialogDismissed();
-    }
-
 
 }

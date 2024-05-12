@@ -8,23 +8,27 @@ public class HotelModel {
     String hotelName;
     String hotelDescription;
     String hotelImage;
+    String hotelAddress;
+    String hotelPrice;
     ArrayList<String> hotelBookedClientId;
 
     public HotelModel() {
     }
 
-    public HotelModel(String hotelName, String hotelDescription, String hotelImage) {
-        this.hotelName = hotelName;
-        this.hotelDescription = hotelDescription;
-        this.hotelImage = hotelImage;
-    }
+//    public HotelModel(String hotelName, String hotelDescription, String hotelImage,String hotelAddress,String hotelPrice) {
+//        this.hotelName = hotelName;
+//        this.hotelDescription = hotelDescription;
+//        this.hotelImage = hotelImage;
+//        this.hotelAddress = hotelAddress;
+//        this.hotelPrice = hotelPrice;
+//    }// this constructor needs to be used when new ui fields are made for address and price.
 
     public HotelModel(String hotelId, String hotelName, String hotelDescription, String hotelImage) {
         this.hotelId = hotelId;
         this.hotelName = hotelName;
         this.hotelDescription = hotelDescription;
         this.hotelImage = hotelImage;
-    }
+    }// this constructor need to be disposed-off when new ui fields are made for address and price.
 
     public HotelModel(String hotelId, String hotelName, String hotelDescription, String hotelImage, ArrayList<String> hotelBookedClientId) {
         this.hotelId = hotelId;
@@ -32,7 +36,7 @@ public class HotelModel {
         this.hotelDescription = hotelDescription;
         this.hotelImage = hotelImage;
         this.hotelBookedClientId = hotelBookedClientId;
-    }
+    }//this constructor is used when client booked hotel or fetches above data.
 
     public String getHotelId() {
         return hotelId;
@@ -64,6 +68,22 @@ public class HotelModel {
 
     public void setHotelImage(String hotelImage) {
         this.hotelImage = hotelImage;
+    }
+
+    public String getHotelAddress() {
+        return hotelAddress;
+    }
+
+    public void setHotelAddress(String hotelAddress) {
+        this.hotelAddress = hotelAddress;
+    }
+
+    public String getHotelPrice() {
+        return hotelPrice;
+    }
+
+    public void setHotelPrice(String hotelPrice) {
+        this.hotelPrice = hotelPrice;
     }
 
     public ArrayList<String> getHotelBookedClientId() {

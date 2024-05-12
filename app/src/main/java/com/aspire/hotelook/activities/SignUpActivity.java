@@ -23,7 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,7 @@ public class SignUpActivity extends AppCompatActivity {
     private ActivitySignUpBinding binding;
     private final ArrayList<String> gender_list = new ArrayList<>();
     private FirebaseAuth auth;
-    private FirebaseFirestore firestore;
+    private FirebaseDatabase firebaseDatabase;
     private String uid;
 
     @Override
@@ -47,7 +47,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
         auth = FirebaseAuth.getInstance();
-        firestore = FirebaseFirestore.getInstance();
+        firebaseDatabase = FirebaseDatabase.getInstance();
 
         gender_list.add("Gender");
         gender_list.add("Male");
@@ -94,16 +94,22 @@ public class SignUpActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isComplete()){
                                     uid = task.getResult().getUser().getUid();
-                                    firestore.collection("users").document(uid)
-                                            .set(new UserModel(uid, name, email, phoneNumber, gender, address))
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    binding.inactivityView.setVisibility(GONE);
-                                                    binding.progressBar.setVisibility(GONE);
-                                                    startActivity(new Intent(SignUpActivity.this, HomePage.class));
-                                                }
-                                            });
+
+                                    UserModel users = new UserModel(uid, name, email, phoneNumber, gender, address);
+
+                                    firebaseDatabase.getReference("Users").child(uid).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            binding.inactivityView.setVisibility(GONE);
+                                            binding.progressBar.setVisibility(GONE);
+                                            startActivity(new Intent(SignUpActivity.this, HomePage.class));
+                                        }
+                                    }).addOnFailureListener(e -> {
+                                        binding.inactivityView.setVisibility(GONE);
+                                        binding.progressBar.setVisibility(GONE);
+                                        Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+
                                 }else{
                                     binding.inactivityView.setVisibility(GONE);
                                     binding.progressBar.setVisibility(GONE);
