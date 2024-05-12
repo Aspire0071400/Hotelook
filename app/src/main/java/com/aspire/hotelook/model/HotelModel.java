@@ -13,6 +13,12 @@ public class HotelModel {
     public HotelModel() {
     }
 
+    public HotelModel(String hotelName, String hotelDescription, String hotelImage) {
+        this.hotelName = hotelName;
+        this.hotelDescription = hotelDescription;
+        this.hotelImage = hotelImage;
+    }
+
     public HotelModel(String hotelId, String hotelName, String hotelDescription, String hotelImage) {
         this.hotelId = hotelId;
         this.hotelName = hotelName;

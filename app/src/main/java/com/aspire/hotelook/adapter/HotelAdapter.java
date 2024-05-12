@@ -1,7 +1,11 @@
 package com.aspire.hotelook.adapter;
 
 
+import static androidx.core.content.ContextCompat.startActivity;
+
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +19,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aspire.hotelook.R;
+import com.aspire.hotelook.activities.EditHotelActivity;
 import com.aspire.hotelook.dialog.AddHotelDetailsFragment;
 import com.aspire.hotelook.model.HotelModel;
 import com.bumptech.glide.Glide;
@@ -29,9 +34,12 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder>{
     Context context;
     private FirebaseFirestore firestore;
 
-    public HotelAdapter(ArrayList<HotelModel> hotelList, Context context) {
+    private Activity activity;
+
+    public HotelAdapter(ArrayList<HotelModel> hotelList, Context context,Activity activity) {
         this.hotelList = hotelList;
         this.context = context;
+        this.activity = activity;
     }
 
     public void setHotelList(ArrayList<HotelModel> hotelList) {
@@ -54,7 +62,7 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder>{
         HotelModel hotelModel = hotelList.get(position);
         holder.hotelName.setText(hotelModel.getHotelName());
         holder.hotelDescription.setText(hotelModel.getHotelDescription());
-        Glide.with(context).load(hotelModel.getHotelImage().toString()).into(holder.hotelImage);
+        Glide.with(context).load(hotelModel.getHotelImage()).into(holder.hotelImage);
 
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,7 +84,16 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder>{
         holder.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                int position = holder.getAdapterPosition();
+                if (activity != null) {
+                    Intent i = new Intent(context, EditHotelActivity.class);
+                    i.putExtra("hotelId", hotelList.get(position).getHotelId());
+                    i.putExtra("currentImage",hotelList.get(position).getHotelImage());
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(i);
+                } else {
+                    Toast.makeText(context, "Unable to start activity", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

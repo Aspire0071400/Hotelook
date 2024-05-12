@@ -84,26 +84,29 @@ public class AddHotelDetailsFragment extends DialogFragment {
             //String currentUserId = auth.getCurrentUser().getUid();
             String hotelName = addHotelName.getText().toString();
             String hotelDescription = addHotelDescription.getText().toString();
-            String imageUrl = imageUri.toString();
 
 
-            if (hotelName.isEmpty() || hotelDescription.isEmpty() || imageUri == null) {
-                Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
-            }else{
-                if(!imageUrl.isEmpty())
-                {
-                    hotelModel = new HotelModel(hotelId, hotelName, hotelDescription, imageUrl);
-                    firestore.collection("Hotels").document(hotelId).set(hotelModel)
-                            .addOnCompleteListener(firestoreTask -> {
-                                if (firestoreTask.isSuccessful()) {
-                                    Toast.makeText(getContext(), "Hotel added successfully", Toast.LENGTH_SHORT).show();
-                                    hotelAdapter.notifyDataSetChanged();
-                                    dismiss();
-                                } else {
-                                    Toast.makeText(getContext(), "Error adding hotel", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+            try{
+                if (hotelName.isEmpty() || hotelDescription.isEmpty() || imageUri == null) {
+                    Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
+                } else {
+                    String imageUrl = imageUri.toString();
+                        hotelModel = new HotelModel(hotelId, hotelName, hotelDescription, imageUrl);
+                        firestore.collection("Hotels").document(hotelId).set(hotelModel)
+                                .addOnCompleteListener(firestoreTask -> {
+                                    if (firestoreTask.isSuccessful()) {
+                                        Toast.makeText(getContext(), "Hotel added successfully", Toast.LENGTH_SHORT).show();
+                                        hotelAdapter.notifyDataSetChanged();
+                                        dismiss();
+                                    } else {
+                                        Toast.makeText(getContext(), "Error adding hotel", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
                 }
+            }catch (Exception e){
+                Toast.makeText(getContext(), "Error adding hotel" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                System.out.println(e.getMessage());
             }
 
         });
@@ -127,15 +130,16 @@ public class AddHotelDetailsFragment extends DialogFragment {
             Uri uri = data.getData();
             StorageReference storageReference = storage.getReference()
                     .child("HotelPics")
-                    .child(auth.getCurrentUser().getUid().toString());
+                    .child(auth.getCurrentUser().getUid().toString()+new Date().getTime());
 
+            assert uri != null;
             storageReference.putFile(uri).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     storageReference.getDownloadUrl().addOnCompleteListener(uriTask -> {
                         if (uriTask.isSuccessful()) {
                             hotelImage.setImageURI(uri);
                             //Glide.with(this).load(data.getData().toString()).into(hotelImage);
-                            imageUri = uri;
+                            imageUri = uriTask.getResult();
                         } else {
                             Toast.makeText(getContext(), "Error getting download URL: " + Objects.requireNonNull(uriTask.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                         }

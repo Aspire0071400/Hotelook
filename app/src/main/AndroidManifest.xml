@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
         android:allowBackup="true"
@@ -16,14 +16,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Hotelook"
         tools:targetApi="31">
-
-        <activity android:name=".activities.HomePage" android:exported="false"
-            android:theme="@style/Base.Theme.Hotelook"/>
-        <activity android:name=".activities.LoginActivity" android:exported="false"
-            android:theme="@style/Base.Theme.Hotelook"/>
-        <activity android:name=".activities.SignUpActivity" android:exported="false"
-            android:theme="@style/Base.Theme.Hotelook"/>
-
+        <activity
+            android:name=".activities.EditHotelActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.HomePage"
+            android:exported="false"
+            android:theme="@style/Base.Theme.Hotelook" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="false"
+            android:theme="@style/Base.Theme.Hotelook" />
+        <activity
+            android:name=".activities.SignUpActivity"
+            android:exported="false"
+            android:theme="@style/Base.Theme.Hotelook" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

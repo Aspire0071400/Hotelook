@@ -53,7 +53,7 @@ public class HomePage extends AppCompatActivity implements AddHotelDetailsFragme
 
         hotelRecyclerView = findViewById(R.id.hotel_recycler_view);
         hotelList = new ArrayList<>();
-        hotelAdapter = new HotelAdapter(hotelList,getApplicationContext());
+        hotelAdapter = new HotelAdapter(hotelList,getApplicationContext(),this);
         hotelRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         hotelRecyclerView.setAdapter(hotelAdapter);
 
