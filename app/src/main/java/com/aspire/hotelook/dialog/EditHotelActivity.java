@@ -1,4 +1,4 @@
-package com.aspire.hotelook.activities;
+package com.aspire.hotelook.dialog;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -17,23 +17,17 @@ import com.aspire.hotelook.adapter.HotelAdapter;
 import com.aspire.hotelook.databinding.ActivityEditHotelBinding;
 import com.aspire.hotelook.model.HotelModel;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.AbstractCollection;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -44,12 +38,12 @@ public class EditHotelActivity extends AppCompatActivity {
     private FirebaseFirestore firestore;
     private FirebaseDatabase firebaseDatabase;
     private FirebaseStorage storage;
-    private Uri imageOldUri, imageNewUri;
-    HotelModel hotelModel;
+    private Uri imageNewUri = null;
     private String hotelId;
     private String currentImage;
     HotelAdapter hotelAdapter = new HotelAdapter();
     private ArrayList<HotelModel> hotelList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +57,10 @@ public class EditHotelActivity extends AppCompatActivity {
             return insets;
         });
 
+
         hotelId = getIntent().getStringExtra("hotelId");
         currentImage = getIntent().getStringExtra("currentImage");
+        Glide.with(EditHotelActivity.this).load(currentImage).into(binding.editHotelImage);
         hotelList = new ArrayList<>();
 
         auth = FirebaseAuth.getInstance();
@@ -74,73 +70,73 @@ public class EditHotelActivity extends AppCompatActivity {
 
         getExistingDataFromFirestore(hotelId);
 
-        binding.updateEditHotel.setOnClickListener(v -> {
+        try {
+            onStart();
+        } catch (Exception e) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
 
+
+        binding.updateHotel.setOnClickListener(v -> {
             String hotelName = binding.editHotelName.getText().toString();
             String hotelDescription = binding.editHotelDescription.getText().toString();
+            String hotelAddress = binding.editHotelAddress.getText().toString();
+            String hotelPrice = binding.editHotelPrice.getText().toString();
 
+//            try {
+            if (hotelName.isEmpty() || hotelDescription.isEmpty() || hotelAddress.isEmpty() || hotelPrice.isEmpty()) {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            } else if (imageNewUri != null) {
 
-            try {
-                if (hotelName.isEmpty() || hotelDescription.isEmpty()) {
-                    Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (imageNewUri != null) {
-                        String imageUrl = imageNewUri.toString();
-                        StorageReference storageReference = storage.getReference().child("HotelPics")
-                                .child(auth.getCurrentUser().getUid().toString());
+                Map<String, Object> updateData = new HashMap<>();
+                updateData.put("hotelName", hotelName);
+                updateData.put("hotelDescription", hotelDescription);
+                updateData.put("hotelImage", imageNewUri.toString());
+                updateData.put("hotelAddress", hotelAddress);
+                updateData.put("hotelPrice", hotelPrice);
 
-                        storageReference.putFile(Uri.parse(imageUrl)).addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                storageReference.getDownloadUrl().addOnCompleteListener(uriTask -> {
-                                    if (uriTask.isSuccessful()) {
+                //Glide.with(EditHotelActivity.this).load(imageNewUri).into(binding.editHotelImage);
 
-                                        Map<String, Object> updateData = new HashMap<>();
-                                        updateData.put("hotelName", hotelName);
-                                        updateData.put("hotelDescription", hotelDescription);
-                                        updateData.put("hotelImage", imageUrl);
-
-                                        Glide.with(this).load(imageUrl).into(binding.editHotelImage);
-                                        String newImageUrl = uriTask.getResult().toString();
-
-                                        firebaseDatabase.getReference()
-                                                .child("Hotels")
-                                                .child(hotelId).updateChildren(updateData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void unused) {
-                                                        Toast.makeText(EditHotelActivity.this, "Hotel updated successfully", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                }).addOnFailureListener(e -> {
-                                                    Toast.makeText(EditHotelActivity.this, "Error updating hotel: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                });
-                                    }
-                                });
+                firebaseDatabase.getReference()
+                        .child("Hotels")
+                        .child(hotelId).updateChildren(updateData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(EditHotelActivity.this, "Hotel updated successfully", Toast.LENGTH_SHORT).show();
+                                finish();
                             }
+                        }).addOnFailureListener(e -> {
+                            Toast.makeText(EditHotelActivity.this, "Error updating hotel: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         });
 
-                    }else{
 
-                        Map<String, Object> updateData = new HashMap<>();
-                        updateData.put("hotelName", hotelName);
-                        updateData.put("hotelDescription", hotelDescription);
+            } else {
 
-                        firebaseDatabase.getReference()
-                                .child("Hotels")
-                                .child(hotelId)
-                                .updateChildren(updateData).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void unused) {
-                                        Toast.makeText(EditHotelActivity.this,"Hotel updated successfully",Toast.LENGTH_SHORT).show();
-                                    }
-                                }).addOnFailureListener(e -> {
-                                    Toast.makeText(EditHotelActivity.this, "Error updating hotel: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                });
-                    }
-                }
-            }catch (Exception e){
-                Toast.makeText(this, "Error updating hotel: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Map<String, Object> updateData = new HashMap<>();
+                updateData.put("hotelName", hotelName);
+                updateData.put("hotelDescription", hotelDescription);
+                updateData.put("hotelAddress", hotelAddress);
+                updateData.put("hotelPrice", hotelPrice);
+
+                firebaseDatabase.getReference()
+                        .child("Hotels")
+                        .child(hotelId)
+                        .updateChildren(updateData).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(EditHotelActivity.this, "Hotel updated successfully", Toast.LENGTH_SHORT).show();
+                                EditHotelActivity.this.finish();
+                            }
+                        }).addOnFailureListener(e -> {
+                            Toast.makeText(EditHotelActivity.this, "Error fail updating hotel: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
+
             }
-
+//            } catch (Exception e) {
+//                Toast.makeText(this, "Error e1 updating hotel: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
         });
+
 
         binding.editHotelImage.setOnClickListener(v -> {
             openGallery();
@@ -163,9 +159,9 @@ public class EditHotelActivity extends AppCompatActivity {
             Uri uri = data.getData();
             StorageReference storageReference = storage.getReference()
                     .child("HotelPics")
-                    .child(auth.getCurrentUser().getUid().toString());
+                    .child(auth.getCurrentUser().getUid() + System.currentTimeMillis());
 
-            assert uri != null;
+
             storageReference.putFile(uri).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     storageReference.getDownloadUrl().addOnCompleteListener(uriTask -> {
@@ -173,6 +169,7 @@ public class EditHotelActivity extends AppCompatActivity {
                             binding.editHotelImage.setImageURI(uri);
                             //Glide.with(this).load(data.getData().toString()).into(hotelImage);
                             imageNewUri = uriTask.getResult();
+                            Toast.makeText(this, imageNewUri.toString(), Toast.LENGTH_LONG).show();
                         } else {
                             Toast.makeText(this, "Error getting download URL: " + Objects.requireNonNull(uriTask.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                         }
@@ -181,45 +178,36 @@ public class EditHotelActivity extends AppCompatActivity {
                     Toast.makeText(this, "Error uploading image: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
+        } else {
+            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
         }
-        else {Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();}
     }
 
     private void getExistingDataFromFirestore(String hotelId) {
-        if(hotelId != null){
+        if (hotelId != null) {
             firebaseDatabase.getReference().child("Hotels").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()){
-                        for(DataSnapshot hotelSnapshot : snapshot.getChildren()){
+                    if (snapshot.exists()) {
+                        for (DataSnapshot hotelSnapshot : snapshot.getChildren()) {
                             HotelModel hotelModel = hotelSnapshot.getValue(HotelModel.class);
-                            hotelList.add(hotelModel);
-                            hotelAdapter.notifyDataSetChanged();
+                            //hotelList.add(hotelModel);
+                            if (hotelModel.getHotelId().equals(hotelId)) {
+                                binding.editHotelName.setText(hotelModel.getHotelName());
+                                binding.editHotelDescription.setText(hotelModel.getHotelDescription());
+                                binding.editHotelAddress.setText(hotelModel.getHotelAddress());
+                                binding.editHotelPrice.setText(hotelModel.getHotelPrice());
+                            }
                         }
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     String errorMessage = error.getMessage();
                     Toast.makeText(EditHotelActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                    hotelAdapter.notifyDataSetChanged();
-
                 }
             });
-
-
-            firebaseDatabase.getReference().child("Hotels").child(hotelId).get().addOnCompleteListener(task -> {
-                hotelModel = task.getResult().getValue(HotelModel.class);
-                if(hotelModel != null){
-                    imageOldUri = Uri.parse(currentImage);
-                    binding.editHotelName.setText(hotelModel.getHotelName());
-                    binding.editHotelDescription.setText(hotelModel.getHotelDescription());
-                    Glide.with(EditHotelActivity.this).load(imageOldUri).into(binding.editHotelImage);
-                }else{
-                    Toast.makeText(this, "Error getting hotel data", Toast.LENGTH_SHORT).show();
-                }
-            });
-
 
         }
     }

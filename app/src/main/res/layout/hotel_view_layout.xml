@@ -8,7 +8,7 @@
     <androidx.cardview.widget.CardView
         padding="8dp"
         android:layout_width="match_parent"
-        android:layout_height="170dp"
+        android:layout_height="180dp"
         app:cardCornerRadius="20dp"
         android:elevation="20dp"
         android:backgroundTint="@color/white"
@@ -37,7 +37,7 @@
             android:lines="1"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="150dp"
-            android:layout_marginBottom="40dp"/>
+            android:layout_marginBottom="60dp"/>
 
         <TextView
             android:id="@+id/hotel_description"
@@ -46,19 +46,19 @@
             android:maxHeight="85dp"
             android:text="Hotel Description : jdnhfjhn u heuihh uewhuih uwehguih urgi g irhg iurhuwh rukdj nfk sjdgk fdjsgk jhdjs hdfdh fjl hj ddfjk dh"
             android:textSize="16sp"
-            android:maxEms="11"
+            android:maxEms="12"
             android:textStyle="italic"
-            android:lines="4"
+            android:lines="3"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="150dp"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginBottom="14dp"/>
 
         <ImageButton
             android:id="@+id/delete_hotel"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="end"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="50dp"
             android:layout_marginTop="8dp"
             android:src="@drawable/baseline_delete_24"
             android:background="@color/transparent"/>
@@ -67,11 +67,35 @@
             android:id="@+id/edit_hotel"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_gravity="end|bottom"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:src="@drawable/baseline_edit_24"
             android:background="@color/transparent"/>
+
+        <TextView
+            android:id="@+id/hotel_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:text="₹ 4855"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="18dp"/>
+
+        <TextView
+            android:id="@+id/hotel_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="P-63 janakprui west delhidgdkg[wdkflwd,kfld;ppom"
+            android:maxLines="1"
+            android:maxEms="11"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="150dp"/>
 
     </androidx.cardview.widget.CardView>
 

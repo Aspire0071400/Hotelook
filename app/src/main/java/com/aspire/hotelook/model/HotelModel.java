@@ -15,32 +15,30 @@ public class HotelModel {
     public HotelModel() {
     }
 
-//    public HotelModel(String hotelName, String hotelDescription, String hotelImage,String hotelAddress,String hotelPrice) {
-//        this.hotelName = hotelName;
-//        this.hotelDescription = hotelDescription;
-//        this.hotelImage = hotelImage;
-//        this.hotelAddress = hotelAddress;
-//        this.hotelPrice = hotelPrice;
-//    }// this constructor needs to be used when new ui fields are made for address and price.
-
-    public HotelModel(String hotelId, String hotelName, String hotelDescription, String hotelImage) {
+    public HotelModel(String hotelId,String hotelName, String hotelDescription, String hotelImage,String hotelAddress,String hotelPrice) {
         this.hotelId = hotelId;
         this.hotelName = hotelName;
         this.hotelDescription = hotelDescription;
         this.hotelImage = hotelImage;
-    }// this constructor need to be disposed-off when new ui fields are made for address and price.
+        this.hotelAddress = hotelAddress;
+        this.hotelPrice = hotelPrice;
+    }
 
-    public HotelModel(String hotelId, String hotelName, String hotelDescription, String hotelImage, ArrayList<String> hotelBookedClientId) {
+
+    public HotelModel(String hotelId, String hotelName, String hotelDescription, String hotelImage,String hotelAddress,String hotelPrice, ArrayList<String> hotelBookedClientId) {
         this.hotelId = hotelId;
         this.hotelName = hotelName;
         this.hotelDescription = hotelDescription;
         this.hotelImage = hotelImage;
+        this.hotelAddress = hotelAddress;
+        this.hotelPrice = hotelPrice;
         this.hotelBookedClientId = hotelBookedClientId;
     }//this constructor is used when client booked hotel or fetches above data.
 
     public String getHotelId() {
         return hotelId;
     }
+
 
     public void setHotelId(String hotelId) {
         this.hotelId = hotelId;

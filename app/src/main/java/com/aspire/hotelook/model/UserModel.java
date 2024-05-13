@@ -7,16 +7,30 @@ public class UserModel {
     String phoneNumber = null;
     String gender = null;
     String address = null;
+    Boolean isVendor = null;
 
-    public UserModel(String uid,String name, String email, String phoneNumber, String gender, String address) {
+    public UserModel(String uid,String name, String email, String phoneNumber, String gender, String address,Boolean isVendor) {
         this.uid = uid;
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.gender = gender;
         this.address = address;
+        this.isVendor = isVendor;
+
     }
 
+    public UserModel() {
+    }
+
+
+    public Boolean getVendor() {
+        return isVendor;
+    }
+
+    public void setVendor(Boolean vendor) {
+        isVendor = vendor;
+    }
 
     public String getUid() {
         return uid;

@@ -151,10 +151,10 @@
                 android:id="@+id/signup_password"
                 android:layout_width="300dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="16dp"
                 android:background="@drawable/curved_edge_background"
                 android:backgroundTint="@color/light_grey"
                 android:elevation="20dp"
+                android:layout_marginTop="16dp"
                 android:filterTouchesWhenObscured="true"
                 android:hint="Password"
                 android:inputType="textPassword"
@@ -162,7 +162,7 @@
                 android:textColorHint="@color/black"
                 app:layout_constraintEnd_toEndOf="@+id/signup_address"
                 app:layout_constraintStart_toStartOf="@+id/signup_address"
-                app:layout_constraintTop_toBottomOf="@+id/signup_address" />
+                app:layout_constraintTop_toBottomOf="@+id/radioGroup2" />
 
             <EditText
                 android:id="@+id/signup_password_confirm"
@@ -194,6 +194,50 @@
                 app:layout_constraintEnd_toEndOf="@+id/signup_btn"
                 app:layout_constraintStart_toStartOf="@+id/signup_btn"
                 app:layout_constraintTop_toBottomOf="@+id/signup_btn" />
+
+            <RadioGroup
+                android:id="@+id/radioGroup2"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/signup_address">
+
+                <TextView
+                    android:id="@+id/textView7"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:text="Select a Role type: " />
+
+                <RadioGroup
+                    android:id="@+id/radioGroup"
+                    android:layout_width="300dp"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/vendor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="I'm a Vendor" />
+
+                <RadioButton
+                    android:id="@+id/customer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="I'm a Customer" />
+
+                </RadioGroup>
+
+            </RadioGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -33,6 +33,7 @@ public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseDatabase firebaseDatabase;
     private String uid;
+    private Boolean IsVendor = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,13 @@ public class SignUpActivity extends AppCompatActivity {
             String address = binding.signupAddress.getText().toString();
             String password = binding.signupPassword.getText().toString().trim();
             String confirmPassword = binding.signupPasswordConfirm.getText().toString().trim();
+            if(binding.radioGroup.getCheckedRadioButtonId() == R.id.vendor){
+                IsVendor = true;
+            }else if(binding.radioGroup.getCheckedRadioButtonId() == R.id.customer){
+                IsVendor = false;
+            }else{
+                Toast.makeText(this, "Please select a role", Toast.LENGTH_SHORT).show();
+            }
 
 
             if (name.isEmpty() || email.isEmpty() || phoneNumber.isEmpty() || gender.equals("Gender") || address.isEmpty()) {
@@ -95,14 +103,20 @@ public class SignUpActivity extends AppCompatActivity {
                                 if(task.isComplete()){
                                     uid = task.getResult().getUser().getUid();
 
-                                    UserModel users = new UserModel(uid, name, email, phoneNumber, gender, address);
+                                    UserModel users = new UserModel(uid, name, email, phoneNumber, gender, address, IsVendor);
 
                                     firebaseDatabase.getReference("Users").child(uid).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
                                             binding.inactivityView.setVisibility(GONE);
                                             binding.progressBar.setVisibility(GONE);
-                                            startActivity(new Intent(SignUpActivity.this, HomePage.class));
+                                            if(IsVendor){
+                                                startActivity(new Intent(SignUpActivity.this, HomePage.class));
+                                            }else{
+                                                Toast.makeText(SignUpActivity.this,"Client",Toast.LENGTH_SHORT).show();
+                                                //client home page here.
+                                            }
+
                                         }
                                     }).addOnFailureListener(e -> {
                                         binding.inactivityView.setVisibility(GONE);
