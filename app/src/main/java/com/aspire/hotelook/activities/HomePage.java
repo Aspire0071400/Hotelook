@@ -45,7 +45,7 @@ public class HomePage extends AppCompatActivity {
             return insets;
         });
 
-
+        String vendor = getIntent().getStringExtra("IsVendor");
         String IsVendor = "true";
         hotelList = new ArrayList<>();
         hotelAdapter = new HotelAdapter(hotelList, getApplicationContext(), this, IsVendor);

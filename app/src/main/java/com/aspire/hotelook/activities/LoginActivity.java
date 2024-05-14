@@ -69,12 +69,12 @@ public class LoginActivity extends AppCompatActivity {
                                         if (snapshot.exists()) {
                                             userType = snapshot.child("vendor").getValue(String.class);
 
-                                            if (userType == "true") {
+                                            if (Objects.equals(userType, "true")) {
                                                 Intent intent = new Intent(LoginActivity.this, HomePage.class);
                                                 intent.putExtra("IsVendor", "true");
                                                 startActivity(intent);
                                                 finish();
-                                            } else if (userType == "false") {
+                                            } else if (Objects.equals(userType, "false")) {
                                                 Intent intent = new Intent(LoginActivity.this, ClientHomePage.class);
                                                 intent.putExtra("IsVendor", "false");
                                                 startActivity(intent);

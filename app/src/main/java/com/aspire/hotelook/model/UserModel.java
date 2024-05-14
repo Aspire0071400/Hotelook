@@ -17,8 +17,8 @@ public class UserModel {
         this.gender = gender;
         this.address = address;
         this.isVendor = isVendor;
-
     }
+
 
     public UserModel() {
     }

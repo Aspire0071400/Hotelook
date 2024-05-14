@@ -6,4 +6,5 @@
     <color name="link_blue">#2196F3</color>
     <color name="inactivity_grey">#80464646</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="inactive_grey">#7D7D7D</color>
 </resources>

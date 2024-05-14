@@ -33,12 +33,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/client_materialToolbar" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/client_booking_list_fab"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="32dp"
+        android:text="Bookings"
+        android:hapticFeedbackEnabled="true"
+        app:icon="@drawable/baseline_collections_bookmark_24"
+        android:textColor="@color/black"
+        android:textAllCaps="true"
+        android:textSize="16sp"
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

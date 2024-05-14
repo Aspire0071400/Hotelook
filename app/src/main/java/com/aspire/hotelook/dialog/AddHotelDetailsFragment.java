@@ -3,17 +3,8 @@ package com.aspire.hotelook.dialog;
 import static android.app.Activity.RESULT_OK;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,18 +14,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+
 import com.aspire.hotelook.R;
-import com.aspire.hotelook.activities.HomePage;
 import com.aspire.hotelook.adapter.HotelAdapter;
-import com.aspire.hotelook.databinding.FragmentAddHotelDetailsBinding;
 import com.aspire.hotelook.model.HotelModel;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.TransitionOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -45,7 +34,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class AddHotelDetailsFragment extends DialogFragment {
-    private EditText addHotelName, addHotelDescription,addHotelAddress,addHotelPrice;
+    private EditText addHotelName, addHotelDescription, addHotelAddress, addHotelPrice;
     private CircleImageView hotelImage;
     private FirebaseAuth auth;
     private FirebaseDatabase firebaseDatabase;
@@ -81,11 +70,12 @@ public class AddHotelDetailsFragment extends DialogFragment {
             openGallery();
         });
 
-        backBtn.setOnClickListener(v->{
+        backBtn.setOnClickListener(v -> {
             dismiss();
         });
 
-        addHotelBtn.setOnClickListener(v->{
+        addHotelBtn.setOnClickListener(v -> {
+            String hotelVendorId = auth.getCurrentUser().getUid();
             String hotelId = auth.getCurrentUser().getUid().toString() + new Date().getTime();
             String hotelName = addHotelName.getText().toString();
             String hotelDescription = addHotelDescription.getText().toString();
@@ -93,54 +83,38 @@ public class AddHotelDetailsFragment extends DialogFragment {
             String price = addHotelPrice.getText().toString();
 
 
-            try{
+            try {
                 if (hotelName.isEmpty() || hotelDescription.isEmpty() || imageUri == null) {
                     Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 } else {
                     String imageUrl = imageUri.toString();
-                        hotelModel = new HotelModel(hotelId, hotelName, hotelDescription, imageUrl,address, price);
+                    hotelModel = new HotelModel(hotelId, hotelName, hotelDescription, imageUrl, address, price, hotelVendorId);
 
-                        firebaseDatabase.getReference()
-                                .child("Hotels")
-                                .child(hotelId)
-                                .setValue(hotelModel)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(getContext(), "Hotel added successfully", Toast.LENGTH_SHORT).show();
-                                hotelAdapter.notifyDataSetChanged();
-                                dismiss();
-                            }
-                        }).addOnFailureListener(e -> {
-                                    Toast.makeText(getContext(), "Error adding hotel", Toast.LENGTH_SHORT).show();
-                        });
+                    firebaseDatabase.getReference()
+                            .child("Hotels")
+                            .child(hotelId)
+                            .setValue(hotelModel)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Toast.makeText(getContext(), "Hotel added successfully", Toast.LENGTH_SHORT).show();
+                                    hotelAdapter.notifyDataSetChanged();
+                                    dismiss();
+                                }
+                            }).addOnFailureListener(e -> {
+                                Toast.makeText(getContext(), "Error adding hotel", Toast.LENGTH_SHORT).show();
+                            });
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 Toast.makeText(getContext(), "Error adding hotel" + e.getMessage(), Toast.LENGTH_SHORT).show();
                 System.out.println(e.getMessage());
             }
 
         });
-
-//        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-//        int screenWidth = displayMetrics.widthPixels;
-//        int screenHeight = displayMetrics.heightPixels;
-//
-//        // Calculate a reasonable dialog width and height
-//        int dialogWidth = Math.min(screenWidth, (int) (screenWidth * 0.9));
-//        int dialogHeight = (int) (screenHeight * 0.8);
-//
-//        // Set dialog window attributes to adjust width and height
-//        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-//        layoutParams.copyFrom(getDialog().getWindow().getAttributes());
-//        layoutParams.width = dialogWidth;
-//        layoutParams.height = dialogHeight;
-//        getDialog().getWindow().setAttributes(layoutParams);
-
         return view;
     }
 
-    private void openGallery(){
+    private void openGallery() {
 
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -156,7 +130,7 @@ public class AddHotelDetailsFragment extends DialogFragment {
             Uri uri = data.getData();
             StorageReference storageReference = storage.getReference()
                     .child("HotelPics")
-                    .child(auth.getCurrentUser().getUid().toString()+new Date().getTime());
+                    .child(auth.getCurrentUser().getUid().toString() + new Date().getTime());
 
             assert uri != null;
             storageReference.putFile(uri).addOnCompleteListener(task -> {
@@ -173,8 +147,9 @@ public class AddHotelDetailsFragment extends DialogFragment {
                     Toast.makeText(getContext(), "Error uploading image: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
+        } else {
+            Toast.makeText(getContext(), "No image selected", Toast.LENGTH_SHORT).show();
         }
-        else {Toast.makeText(getContext(), "No image selected", Toast.LENGTH_SHORT).show();}
     }
 
     @Override

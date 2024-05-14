@@ -16,7 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aspire.hotelook.R;
-import com.aspire.hotelook.activities.HotelBookingActivity;
+import com.aspire.hotelook.activities.BookingRecordActivity;
+import com.aspire.hotelook.clientActivity.HotelBookingActivity;
 import com.aspire.hotelook.dialog.EditHotelActivity;
 import com.aspire.hotelook.model.HotelModel;
 import com.bumptech.glide.Glide;
@@ -97,6 +98,7 @@ public class HotelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             int position1 = holder.getAdapterPosition();
             if (activity != null) {
                 Intent i = new Intent(context, HotelBookingActivity.class);
+                i.putExtra("hotelVendorId", hotelList.get(position1).getHotelVendorId());
                 i.putExtra("hotelId", hotelList.get(position1).getHotelId());
                 i.putExtra("currentImage", hotelList.get(position1).getHotelImage());
                 i.putExtra("hotelName", hotelList.get(position1).getHotelName());
@@ -121,15 +123,16 @@ public class HotelAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         Glide.with(context).load(hotelModel.getHotelImage()).into(holder.hotelImage);
 
         holder.itemView.setOnClickListener(v -> {
-            int position1 = holder.getAdapterPosition();
+            int position = holder.getAdapterPosition();
             if (activity != null) {
-                Intent i = new Intent(context, HotelBookingActivity.class);
-                i.putExtra("hotelId", hotelList.get(position1).getHotelId());
-                i.putExtra("currentImage", hotelList.get(position1).getHotelImage());
-                i.putExtra("hotelName", hotelList.get(position1).getHotelName());
-                i.putExtra("hotelDescription", hotelList.get(position1).getHotelDescription());
-                i.putExtra("hotelAddress", hotelList.get(position1).getHotelAddress());
-                i.putExtra("hotelPrice", hotelList.get(position1).getHotelPrice());
+                Intent i = new Intent(context, BookingRecordActivity.class);
+                i.putExtra("hotelVendorId", hotelList.get(position).getHotelVendorId());
+                i.putExtra("hotelId", hotelList.get(position).getHotelId());
+                i.putExtra("currentImage", hotelList.get(position).getHotelImage());
+                i.putExtra("hotelName", hotelList.get(position).getHotelName());
+                i.putExtra("hotelDescription", hotelList.get(position).getHotelDescription());
+                i.putExtra("hotelAddress", hotelList.get(position).getHotelAddress());
+                i.putExtra("hotelPrice", hotelList.get(position).getHotelPrice());
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(i);
             } else {

@@ -39,8 +39,8 @@ public class ClientHomePage extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        String IsVendor = "IsVendor";
+        String vendor = getIntent().getStringExtra("IsVendor");
+        String IsVendor = "false";
         hotelList = new ArrayList<>();
         hotelAdapter = new HotelAdapter(hotelList, getApplicationContext(), this, IsVendor);
         binding.clientHotelRecyclerView.setLayoutManager(new LinearLayoutManager(this));

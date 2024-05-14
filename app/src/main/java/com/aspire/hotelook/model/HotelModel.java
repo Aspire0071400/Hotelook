@@ -10,30 +10,41 @@ public class HotelModel {
     String hotelImage;
     String hotelAddress;
     String hotelPrice;
+    String hotelVendorId;
     ArrayList<String> hotelBookedClientId;
 
     public HotelModel() {
     }
 
-    public HotelModel(String hotelId,String hotelName, String hotelDescription, String hotelImage,String hotelAddress,String hotelPrice) {
+    public HotelModel(String hotelId, String hotelName, String hotelDescription, String hotelImage, String hotelAddress, String hotelPrice, String hotelVendorId) {
         this.hotelId = hotelId;
         this.hotelName = hotelName;
         this.hotelDescription = hotelDescription;
         this.hotelImage = hotelImage;
         this.hotelAddress = hotelAddress;
         this.hotelPrice = hotelPrice;
+        this.hotelVendorId = hotelVendorId;
     }
 
 
-    public HotelModel(String hotelId, String hotelName, String hotelDescription, String hotelImage,String hotelAddress,String hotelPrice, ArrayList<String> hotelBookedClientId) {
+    public HotelModel(String hotelId, String hotelName, String hotelDescription, String hotelImage, String hotelAddress, String hotelPrice, String hotelVendorId, ArrayList<String> hotelBookedClientId) {
         this.hotelId = hotelId;
         this.hotelName = hotelName;
         this.hotelDescription = hotelDescription;
         this.hotelImage = hotelImage;
         this.hotelAddress = hotelAddress;
         this.hotelPrice = hotelPrice;
+        this.hotelVendorId = hotelVendorId;
         this.hotelBookedClientId = hotelBookedClientId;
     }//this constructor is used when client booked hotel or fetches above data.
+
+    public String getHotelVendorId() {
+        return hotelVendorId;
+    }
+
+    public void setHotelVendorId(String hotelVendorId) {
+        this.hotelVendorId = hotelVendorId;
+    }
 
     public String getHotelId() {
         return hotelId;
