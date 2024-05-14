@@ -7,9 +7,9 @@ public class UserModel {
     String phoneNumber = null;
     String gender = null;
     String address = null;
-    Boolean isVendor = null;
+    String isVendor = null;
 
-    public UserModel(String uid,String name, String email, String phoneNumber, String gender, String address,Boolean isVendor) {
+    public UserModel(String uid, String name, String email, String phoneNumber, String gender, String address, String isVendor) {
         this.uid = uid;
         this.name = name;
         this.email = email;
@@ -24,11 +24,11 @@ public class UserModel {
     }
 
 
-    public Boolean getVendor() {
+    public String getVendor() {
         return isVendor;
     }
 
-    public void setVendor(Boolean vendor) {
+    public void setVendor(String vendor) {
         isVendor = vendor;
     }
 

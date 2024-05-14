@@ -1,24 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/transparent"
-    android:layout_marginTop="4dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_marginTop="4dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="180dp"
         app:cardCornerRadius="20dp"
         android:elevation="20dp"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="#FFF3E0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/hotel_image_view"
+            android:id="@+id/hotel_image_for_client"
             android:layout_width="120dp"
             android:layout_height="140dp"
             android:layout_gravity="center_vertical"
@@ -26,7 +25,7 @@
             app:srcCompat="@drawable/ic_launcher_background" />
 
         <TextView
-            android:id="@+id/hotel_name"
+            android:id="@+id/hotel_name_for_client"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxHeight="25dp"
@@ -37,45 +36,25 @@
             android:lines="1"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="150dp"
-            android:layout_marginBottom="60dp" />
+            android:layout_marginBottom="65dp" />
 
         <TextView
-            android:id="@+id/hotel_description"
+            android:id="@+id/hotel_description_for_client"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxHeight="85dp"
-            android:text="Hotel Description : jdnhfjhn u heuihh uewhuih uwehguih urgi g irhg iurhuwh rukdj nfk sjdgk fdjsgk jhdjs hdfdh fjl hj ddfjk dh"
+            android:text="Hotel Description :"
             android:textSize="16sp"
-            android:maxEms="12"
+            android:maxEms="13"
             android:textStyle="italic"
             android:lines="3"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="150dp"
-            android:layout_marginBottom="14dp" />
+            android:layout_marginBottom="20dp" />
 
-        <ImageButton
-            android:id="@+id/delete_hotel"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="end"
-            android:layout_marginEnd="50dp"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/baseline_delete_24"
-            android:background="@color/transparent" />
-
-        <ImageButton
-            android:id="@+id/edit_hotel"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="end"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:src="@drawable/baseline_edit_24"
-            android:background="@color/transparent" />
 
         <TextView
-            android:id="@+id/hotel_price"
+            android:id="@+id/hotel_price_for_client"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
@@ -87,13 +66,14 @@
             android:layout_marginEnd="18dp" />
 
         <TextView
-            android:id="@+id/hotel_address"
+            android:id="@+id/hotel_address_for_client"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:drawableStart="@drawable/location_pin"
             android:text="P-63 janakprui west delhidgdkg[wdkflwd,kfld;ppom"
             android:maxLines="1"
-            android:maxEms="11"
+            android:maxEms="13"
             android:layout_marginTop="30dp"
             android:layout_marginStart="150dp" />
 

@@ -12,11 +12,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.aspire.hotelook.R;
+import com.aspire.hotelook.clientActivity.ClientHomePage;
 import com.aspire.hotelook.databinding.ActivityLoginBinding;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,11 +22,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
     private FirebaseAuth auth;
     private FirebaseDatabase firebaseDatabase;
+    private String userType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,25 +59,30 @@ public class LoginActivity extends AppCompatActivity {
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(LoginActivity.this, "Please enter email and password",
                         Toast.LENGTH_SHORT).show();
-            }else {
+            } else {
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this,
                         task -> {
                             if (task.isSuccessful()) {
                                 firebaseDatabase.getReference("Users").child(auth.getCurrentUser().getUid().toString()).addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if(snapshot.exists()){
-                                            String userType = snapshot.child("isVendor").getValue(String.class);
-                                            assert userType != null;
-                                            if(userType.equals("true")){
-                                                startActivity(new Intent(LoginActivity.this, HomePage.class));
+                                        if (snapshot.exists()) {
+                                            userType = snapshot.child("vendor").getValue(String.class);
+
+                                            if (userType == "true") {
+                                                Intent intent = new Intent(LoginActivity.this, HomePage.class);
+                                                intent.putExtra("IsVendor", "true");
+                                                startActivity(intent);
                                                 finish();
-                                            }else {
-                                                Toast.makeText(LoginActivity.this,"Client",Toast.LENGTH_SHORT).show();//client
+                                            } else if (userType == "false") {
+                                                Intent intent = new Intent(LoginActivity.this, ClientHomePage.class);
+                                                intent.putExtra("IsVendor", "false");
+                                                startActivity(intent);
                                                 finish();
                                             }
                                         }
                                     }
+
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError error) {
                                     }
@@ -90,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
 
         });
 
-        binding.newUserSignup.setOnClickListener(v ->{
+        binding.newUserSignup.setOnClickListener(v -> {
 
             startActivity(new Intent(this, SignUpActivity.class));
             finish();
@@ -102,11 +108,32 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-
         FirebaseUser currentUser = auth.getCurrentUser();
-        if(currentUser != null){
-            startActivity(new Intent(LoginActivity.this, HomePage.class));
-            finish();
+        if (currentUser != null) {
+            firebaseDatabase.getReference("Users").child(auth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        userType = (String) snapshot.child("vendor").getValue();
+
+                        if (Objects.equals(userType, "true")) {
+                            Intent intent = new Intent(LoginActivity.this, HomePage.class);
+                            intent.putExtra("IsVendor", "true");
+                            startActivity(intent);
+                            finish();
+                        } else if (Objects.equals(userType, "false")) {
+                            Intent intent = new Intent(LoginActivity.this, ClientHomePage.class);
+                            intent.putExtra("IsVendor", "false");
+                            startActivity(intent);
+                            finish();
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
+            });
         }
     }
 }

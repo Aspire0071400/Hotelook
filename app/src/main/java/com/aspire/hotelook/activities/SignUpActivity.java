@@ -16,6 +16,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.aspire.hotelook.R;
+import com.aspire.hotelook.clientActivity.ClientHomePage;
 import com.aspire.hotelook.databinding.ActivitySignUpBinding;
 import com.aspire.hotelook.model.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,7 +34,7 @@ public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseDatabase firebaseDatabase;
     private String uid;
-    private Boolean IsVendor = false;
+    private String IsVendor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class SignUpActivity extends AppCompatActivity {
         gender_list.add("Female");
         gender_list.add("Other");
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, gender_list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, gender_list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.signupGenderSpinner.setAdapter(adapter);
 
@@ -74,33 +75,32 @@ public class SignUpActivity extends AppCompatActivity {
             String address = binding.signupAddress.getText().toString();
             String password = binding.signupPassword.getText().toString().trim();
             String confirmPassword = binding.signupPasswordConfirm.getText().toString().trim();
-            if(binding.radioGroup.getCheckedRadioButtonId() == R.id.vendor){
-                IsVendor = true;
-            }else if(binding.radioGroup.getCheckedRadioButtonId() == R.id.customer){
-                IsVendor = false;
-            }else{
-                Toast.makeText(this, "Please select a role", Toast.LENGTH_SHORT).show();
-            }
 
 
             if (name.isEmpty() || email.isEmpty() || phoneNumber.isEmpty() || gender.equals("Gender") || address.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(this, "Invalid email format. Please enter a valid email address.",Toast.LENGTH_LONG).show();
-            } else if(!password.equals(confirmPassword)){
+                Toast.makeText(this, "Invalid email format. Please enter a valid email address.", Toast.LENGTH_LONG).show();
+            } else if (!password.equals(confirmPassword)) {
                 Toast.makeText(this, "Password doesn't match", Toast.LENGTH_SHORT).show();
             } else if (password.length() < 8) {
                 Toast.makeText(this, "Password must be 8 or more characters long", Toast.LENGTH_SHORT).show();
+            } else if (binding.radioGroup.getCheckedRadioButtonId() != R.id.vendor || binding.radioGroup.getCheckedRadioButtonId() != R.id.customer) {
+                Toast.makeText(this, "Please select a role", Toast.LENGTH_SHORT).show();
+            } else if (binding.radioGroup.getCheckedRadioButtonId() == R.id.vendor) {
+                IsVendor = "true";
+            } else if (binding.radioGroup.getCheckedRadioButtonId() == R.id.customer) {
+                IsVendor = "false";
             } else {
 
                 binding.inactivityView.setVisibility(VISIBLE);
                 binding.progressBar.setVisibility(VISIBLE);
 
-                auth.createUserWithEmailAndPassword(email,password)
+                auth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                if(task.isComplete()){
+                                if (task.isComplete()) {
                                     uid = task.getResult().getUser().getUid();
 
                                     UserModel users = new UserModel(uid, name, email, phoneNumber, gender, address, IsVendor);
@@ -110,11 +110,16 @@ public class SignUpActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             binding.inactivityView.setVisibility(GONE);
                                             binding.progressBar.setVisibility(GONE);
-                                            if(IsVendor){
-                                                startActivity(new Intent(SignUpActivity.this, HomePage.class));
-                                            }else{
-                                                Toast.makeText(SignUpActivity.this,"Client",Toast.LENGTH_SHORT).show();
-                                                //client home page here.
+                                            if (IsVendor == "true") {
+                                                Intent intent = new Intent(SignUpActivity.this, HomePage.class);
+                                                intent.putExtra("IsVendor", "true");
+                                                startActivity(intent);
+                                                finish();
+                                            } else if (IsVendor == "false") {
+                                                Intent intent = new Intent(SignUpActivity.this, ClientHomePage.class);
+                                                intent.putExtra("IsVendor", "false");
+                                                startActivity(intent);
+                                                finish();
                                             }
 
                                         }
@@ -124,7 +129,7 @@ public class SignUpActivity extends AppCompatActivity {
                                         Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                     });
 
-                                }else{
+                                } else {
                                     binding.inactivityView.setVisibility(GONE);
                                     binding.progressBar.setVisibility(GONE);
                                     Exception e = task.getException();
