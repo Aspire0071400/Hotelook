@@ -55,7 +55,6 @@ public class HotelBookingActivity extends AppCompatActivity {
         hotelImage = getIntent().getStringExtra("currentImage");
 
         binding.materialToolbarBooking.setTitle(hotelName);
-
         setSupportActionBar(binding.materialToolbarBooking);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         int color = getResources().getColor(R.color.white);
@@ -104,6 +103,7 @@ public class HotelBookingActivity extends AppCompatActivity {
                         Map<String, Object> hotelBookingDetailsForVendor = new HashMap<>();
                         hotelBookingDetailsForVendor.put("clientId", currentUserId);
                         hotelBookingDetailsForVendor.put("bookingId", bookingId);
+                        hotelBookingDetailsForVendor.put("bookingStatus", "pending");
 
                         firebaseDatabase.getReference().child("Hotels")
                                 .child(hotelId)
@@ -113,26 +113,11 @@ public class HotelBookingActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Void unused) {
 
-                                        Map<String, Object> bookingStatus = new HashMap<>();
-                                        bookingStatus.put("bookingStatus", "pending");
-                                        bookingStatus.put("bookingId", bookingId);
-                                        bookingStatus.put("clientId", currentUserId);
-
-                                        firebaseDatabase.getReference().child("Hotels")
-                                                .child(hotelId)
-                                                .child("BookedClientsIds")
-                                                .child(currentUserId)
-                                                .setValue(bookingStatus)
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void unused) {
-                                                        Toast.makeText(HotelBookingActivity.this, "Booking Successful", Toast.LENGTH_SHORT).show();
-                                                        binding.bookingBtn.setEnabled(false);
-                                                        binding.bookingBtn.setText("BOOKED");
-                                                        binding.bookingBtn.setTextColor(getColor(R.color.black));
-                                                        binding.bookingBtn.setBackgroundColor(getColor(R.color.inactivity_grey));
-                                                    }
-                                                });
+                                        Toast.makeText(HotelBookingActivity.this, "Booking Successful", Toast.LENGTH_SHORT).show();
+                                        binding.bookingBtn.setEnabled(false);
+                                        binding.bookingBtn.setText("BOOKED");
+                                        binding.bookingBtn.setTextColor(getColor(R.color.black));
+                                        binding.bookingBtn.setBackgroundColor(getColor(R.color.inactivity_grey));
 
                                     }
                                 });

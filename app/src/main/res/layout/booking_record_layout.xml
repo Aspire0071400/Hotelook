@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:cardCornerRadius="20dp"
+        android:elevation="20dp"
+        android:backgroundTint="#FFF3E0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/hotel_image_for_record"
+            android:layout_width="120dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="16dp"
+            app:srcCompat="@drawable/ic_launcher_background" />
+
+        <TextView
+            android:id="@+id/hotel_name_for_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="25dp"
+            android:text="Hotel Name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:maxEms="8"
+            android:lines="1"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="150dp"
+            android:layout_marginBottom="65dp" />
+
+        <TextView
+            android:id="@+id/hotel_description_for_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="85dp"
+            android:text="Hotel Description :"
+            android:textSize="16sp"
+            android:maxEms="13"
+            android:textStyle="italic"
+            android:lines="2"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="150dp"
+            android:layout_marginBottom="30dp" />
+
+
+        <TextView
+            android:id="@+id/hotel_price_for_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="₹ 4855"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/hotel_booking_status_for_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:text="processing..."
+            android:padding="5dp"
+            android:background="@color/white"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp" />
+
+        <TextView
+            android:id="@+id/hotel_address_for_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:drawableStart="@drawable/location_pin"
+            android:text="P-63 janakprui west delhidgdkg[wdkflwd,kfld;ppom"
+            android:maxLines="1"
+            android:maxEms="13"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="150dp" />
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aspire.hotelook.R;
-import com.aspire.hotelook.activities.BookingRecordActivity;
+import com.aspire.hotelook.clientActivity.BookingRecordActivity;
 import com.aspire.hotelook.clientActivity.HotelBookingActivity;
 import com.aspire.hotelook.dialog.EditHotelActivity;
 import com.aspire.hotelook.model.HotelModel;

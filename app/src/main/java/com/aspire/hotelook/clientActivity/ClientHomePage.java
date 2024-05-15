@@ -1,5 +1,6 @@
 package com.aspire.hotelook.clientActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -49,6 +50,8 @@ public class ClientHomePage extends AppCompatActivity {
         firebaseDatabase = FirebaseDatabase.getInstance();
 
         binding.clientBookingListFab.setOnClickListener(v -> {
+            Intent intent = new Intent(ClientHomePage.this, BookingRecordActivity.class);
+            startActivity(intent);
         });
 
         fetchHotelDataFromDatabase();
